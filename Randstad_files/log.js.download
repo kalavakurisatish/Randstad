@@ -1,0 +1,13 @@
+﻿// Error handling javascript.
+window.onerror = function (msg, source, line, col, error) {
+    const errorHandlerUrl = "/c/clienterror.aspx/logtext";
+    var text = msg + ". \nSource: " + source + " (line " + line + (!col ? '' : ', col ' + col) + ")";
+    const http = new XMLHttpRequest();
+    http.open('POST', errorHandlerUrl, true);
+    http.setRequestHeader('Content-type', 'application/json');
+    var clientData = "";
+    if (document.body !== null && typeof document.body !== "undefined") {
+        clientData = JSON.stringify({ windowWidth: window.innerWidth, windowHeight: window.innerHeight,bodyWidth: document.body.clientWidth, bodyHeight: document.body.clientHeight, scrollTop: document.documentElement.scrollTop || document.body.scrollTop });
+    }
+    http.send(JSON.stringify({ "text": text, "url": document.location.href, "clientData": clientData }));
+};
